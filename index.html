@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi San Valentín?</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #FF69B4, #FF1493);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            padding: 15px;
+        }
+        .heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .heart {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 20, 147, 0.5);
+            transform: rotate(45deg);
+            z-index: 1;
+            animation: float 10s infinite;
+        }
+        .heart::before, .heart::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 20, 147, 0.5);
+            border-radius: 50%;
+        }
+        .heart::before {
+            left: -5px;
+        }
+        .heart::after {
+            top: -5px;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(45deg); }
+            50% { transform: translateY(-50px) rotate(45deg); }
+            100% { transform: translateY(0) rotate(45deg); }
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
+            max-width: 500px;
+            width: 100%;
+        }
+        .emoji-explosion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .emoji {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0;
+            animation: explode 2s forwards;
+        }
+        @keyframes explode {
+            0% { 
+                opacity: 1; 
+                transform: translate(0, 0) scale(1);
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(var(--x), var(--y)) scale(3);
+            }
+        }
+        h1 {
+            color: #FF1493;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 0 1 auto;
+        }
+        #yes-button {
+            background-color: #FF1493;
+            color: white;
+        }
+        #no-button {
+            background-color: #FF69B4;
+            color: white;
+        }
+        #message {
+           /* color: #FF1493;*/
+            color: black;
+            font-weight: bold;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-bg" id="heart-background"></div>
+    <div class="container">
+        <h1 id="main-title">❤️ ¿Quieres ser mi San Valentín? ❤️</h1>
+        <div id="buttons-container" class="buttons">
+            <button id="yes-button" onclick="showLoveMessage()">Sí 😍</button>
+            <button id="no-button" onmouseover="moveButton(event)">No 😞</button>
+        </div>
+        <p id="message"></p>
+    </div>
+    <div id="emoji-explosion" class="emoji-explosion"></div>
+
+    <script>
+        function showLoveMessage() {
+            document.getElementById('main-title').innerHTML = "¡Gracias por Aceptar! 💕";
+            document.getElementById('buttons-container').style.display = 'none';
+            document.getElementById('message').innerHTML = 
+                "Eres la persona mas especial para mi, y no puedo esperar para celebrar este dia contigo. !Tee quiero mucho! 💕<br/><br/> Tengo reservado el 14 y 15 de febrero para que disfrutemos juntos dos experiencias que, te aseguro, serán inolvidables. 🪐🌕";
+            
+            createEmojiExplosion();
+        }
+
+        function createEmojiExplosion() {
+            const explosion = document.getElementById('emoji-explosion');
+            const emojis = ['😍', '❤️', '💕', '💖', '💗', '💓'];
+            
+            for (let i = 0; i < 50; i++) {
+                const emoji = document.createElement('div');
+                emoji.classList.add('emoji');
+                emoji.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                const startX = window.innerWidth / 2;
+                const startY = window.innerHeight / 2;
+                emoji.style.left = `${startX}px`;
+                emoji.style.top = `${startY}px`;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 500;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                emoji.style.setProperty('--x', `${x}px`);
+                emoji.style.setProperty('--y', `${y}px`);
+                
+                explosion.appendChild(emoji);
+                
+                setTimeout(() => {
+                    explosion.removeChild(emoji);
+                }, 2000);
+            }
+        }
+
+        function moveButton(event) {
+            const button = document.getElementById('no-button');
+            const maxX = window.innerWidth - button.offsetWidth;
+            const maxY = window.innerHeight - button.offsetHeight;
+
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            button.style.position = 'fixed';
+            button.style.left = `${randomX}px`;
+            button.style.top = `${randomY}px`;
+        }
+
+        function createHearts() {
+            const container = document.getElementById('heart-background');
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                container.appendChild(heart);
+            }
+        }
+
+        createHearts();
+    </script>
+</body>
+</html>
